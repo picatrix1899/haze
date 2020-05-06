@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Optional;
 
 public class MTLReader
 {
@@ -65,7 +66,6 @@ public class MTLReader
 				line = line.replaceFirst(LK_MAP_DIFFUSE, "").trim();
 				String[] parts = line.split(" ");
 				material.mapDiffuse = parts[parts.length -1];
-				
 				continue;
 			}
 			
@@ -73,7 +73,7 @@ public class MTLReader
 			{
 				line = line.replaceFirst(LK_MAP_BUMPMAP, "").trim();
 				String[] parts = line.split(" ");
-				material.mapDiffuse = parts[parts.length -1];
+				material.mapNormal = parts[parts.length -1];
 				continue;
 			}
 		}
@@ -93,9 +93,9 @@ public class MTLReader
 			
 			Material material = new Material();
 
-			material.mapDiffuse = rawMaterial.mapDiffuse;
-
-			material.mapNormal = rawMaterial.mapNormal;
+			material.mapDiffuse = Optional.ofNullable(rawMaterial.mapDiffuse);
+			
+			material.mapNormal = Optional.ofNullable(rawMaterial.mapNormal);
 			
 			out.materials.put(key, material);
 		}

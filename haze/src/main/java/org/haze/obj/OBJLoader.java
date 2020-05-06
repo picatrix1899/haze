@@ -8,6 +8,7 @@ import java.io.Reader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.barghos.math.vector.vec2.Vec2;
 import org.barghos.math.vector.vec3.Vec3;
@@ -164,7 +165,7 @@ public class OBJLoader
 		{
 			Mesh mesh = new Mesh();
 			mesh.name = rawMesh.name;
-			mesh.material = rawMesh.material;
+			mesh.material = Optional.ofNullable(rawMesh.material);
 			
 			for(FaceRaw rawFace : rawMesh.faces)
 			{
@@ -192,6 +193,8 @@ public class OBJLoader
 			
 			out.meshes.add(mesh);
 		}
+		
+		out.materialList = Optional.ofNullable(list.materialList);
 		
 		return out;
 	}

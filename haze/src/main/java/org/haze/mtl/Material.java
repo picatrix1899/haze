@@ -1,7 +1,9 @@
 package org.haze.mtl;
 
+import java.util.Optional;
+
 public class Material
 {
-	public String mapDiffuse;
-	public String mapNormal;
+	public Optional<String> mapDiffuse = Optional.empty();
+	public Optional<String> mapNormal = Optional.empty();
 }
