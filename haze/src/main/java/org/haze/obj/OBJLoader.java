@@ -206,8 +206,8 @@ public class OBJLoader
 	
 	private void calculateTangents(Vertex a, Vertex b, Vertex c)
 	{
-		Vec3 deltaPos1 = b.position.sub(a.position, null);
-		Vec3 deltaPos2 = c.position.sub(a.position, null);
+		Vec3 deltaPos1 = b.position.subN(a.position);
+		Vec3 deltaPos2 = c.position.subN(a.position);
 		
 		Vec2 uv0 = a.uv;
 		Vec2 uv1 = b.uv;
@@ -217,10 +217,10 @@ public class OBJLoader
 		Vec2 deltaUv2 = uv2.sub(uv0, null);
 
 		float r = 1.0f / (deltaUv1.getX() * deltaUv2.getY() - deltaUv1.getY() * deltaUv2.getX());
-		deltaPos1.mul(deltaUv2.getY(), deltaPos1);
-		deltaPos2.mul(deltaUv1.getY(), deltaPos2);
-		Vec3 tangent = deltaPos1.sub(deltaPos2, null);
-		tangent.mul(r, tangent);
+		deltaPos1.mul(deltaUv2.getY());
+		deltaPos2.mul(deltaUv1.getY());
+		Vec3 tangent = deltaPos1.subN(deltaPos2);
+		tangent.mul(r);
 		
 		a.tangent.add(tangent, a.tangent);
 		b.tangent.add(tangent, b.tangent);
