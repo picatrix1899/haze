@@ -8,7 +8,6 @@ import java.io.Reader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.barghos.math.vector.vec2.Vec2;
 import org.barghos.math.vector.vec3.Vec3;
@@ -165,7 +164,7 @@ public class OBJLoader
 		{
 			Mesh mesh = new Mesh();
 			mesh.name = rawMesh.name;
-			mesh.material = Optional.ofNullable(rawMesh.material);
+			mesh.material = rawMesh.material;
 			
 			for(FaceRaw rawFace : rawMesh.faces)
 			{
@@ -194,13 +193,27 @@ public class OBJLoader
 			out.meshes.add(mesh);
 		}
 		
-		out.materialList = Optional.ofNullable(list.materialList);
+		out.materialList = list.materialList;
 		
 		return out;
 	}
 	
 	private void processFace(Face face)
 	{
+		Vec3 v1 = face.vertexB.position.subN(face.vertexA.position);
+		Vec3 v2 = face.vertexC.position.subN(face.vertexA.position);
+		
+		Vec3 n = v1.cross(v2);
+		
+		if((n.dot(face.vertexA.normal) < 0.0f && n.dot(face.vertexB.normal) < 0.0f) ||
+			(n.dot(face.vertexB.normal) < 0.0f && n.dot(face.vertexC.normal) < 0.0f) ||
+			(n.dot(face.vertexA.normal) < 0.0f && n.dot(face.vertexC.normal) < 0.0f))
+		{
+			n = v2.cross(v1);
+		}
+		
+		face.normal = n;
+		
 		calculateTangents(face.vertexA, face.vertexB, face.vertexC);
 	}
 	

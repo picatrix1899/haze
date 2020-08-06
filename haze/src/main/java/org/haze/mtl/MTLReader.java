@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Optional;
 
 public class MTLReader
 {
@@ -93,9 +92,9 @@ public class MTLReader
 			
 			Material material = new Material();
 
-			material.mapDiffuse = Optional.ofNullable(rawMaterial.mapDiffuse);
+			material.mapDiffuse = rawMaterial.mapDiffuse;
 			
-			material.mapNormal = Optional.ofNullable(rawMaterial.mapNormal);
+			material.mapNormal = rawMaterial.mapNormal;
 			
 			out.materials.put(key, material);
 		}
