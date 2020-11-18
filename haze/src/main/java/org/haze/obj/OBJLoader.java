@@ -9,8 +9,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.barghos.math.vector.vec2.Vec2;
-import org.barghos.math.vector.vec3.Vec3;
+import org.barghos.math.vector.vec2.Vec2f;
+import org.barghos.math.vector.vec3.Vec3f;
 
 public class OBJLoader
 {
@@ -55,9 +55,9 @@ public class OBJLoader
 		ModelRaw model = new ModelRaw();
 		MeshRaw mesh = null;
 		
-		List<Vec3> vertices = new ArrayList<>();
-		List<Vec3> normals = new ArrayList<>();
-		List<Vec2> uvs = new ArrayList<>();
+		List<Vec3f> vertices = new ArrayList<>();
+		List<Vec3f> normals = new ArrayList<>();
+		List<Vec2f> uvs = new ArrayList<>();
 
 		String line = "";
 		while((line = reader.readLine()) != null)
@@ -88,7 +88,7 @@ public class OBJLoader
 			{
 				line = line.replaceFirst(LK_VERTEX, "").trim();
 				String[] parts = line.split(" ");
-				vertices.add(new Vec3(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2])));
+				vertices.add(new Vec3f(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2])));
 				
 				continue;
 			}
@@ -98,7 +98,7 @@ public class OBJLoader
 				line = line.replaceFirst(LK_NORMAL, "").trim();
 				String[] parts = line.split(" ");
 				
-				normals.add(new Vec3(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2])));
+				normals.add(new Vec3f(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2])));
 				
 				continue;
 			}
@@ -108,7 +108,7 @@ public class OBJLoader
 				line = line.replaceFirst(LK_TEXCOORD, "").trim();
 				String[] parts = line.split(" ");
 				
-				uvs.add(new Vec2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
+				uvs.add(new Vec2f(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
 				
 				continue;
 			}
@@ -173,17 +173,17 @@ public class OBJLoader
 				face.vertexA.position = rawFace.vertexA.position;
 				face.vertexA.uv = rawFace.vertexA.uv;
 				face.vertexA.normal = rawFace.vertexA.normal;
-				face.vertexA.tangent = new Vec3();
+				face.vertexA.tangent = new Vec3f();
 				face.vertexB = new Vertex();
 				face.vertexB.position = rawFace.vertexB.position;
 				face.vertexB.uv = rawFace.vertexB.uv;
 				face.vertexB.normal = rawFace.vertexB.normal;
-				face.vertexB.tangent = new Vec3();
+				face.vertexB.tangent = new Vec3f();
 				face.vertexC = new Vertex();
 				face.vertexC.position = rawFace.vertexC.position;
 				face.vertexC.uv = rawFace.vertexC.uv;
 				face.vertexC.normal = rawFace.vertexC.normal;
-				face.vertexC.tangent = new Vec3();
+				face.vertexC.tangent = new Vec3f();
 				
 				processFace(face);
 				
@@ -200,10 +200,10 @@ public class OBJLoader
 	
 	private void processFace(Face face)
 	{
-		Vec3 v1 = face.vertexB.position.subN(face.vertexA.position);
-		Vec3 v2 = face.vertexC.position.subN(face.vertexA.position);
+		Vec3f v1 = face.vertexB.position.subN(face.vertexA.position);
+		Vec3f v2 = face.vertexC.position.subN(face.vertexA.position);
 		
-		Vec3 n = v1.cross(v2);
+		Vec3f n = v1.cross(v2);
 		
 		if((n.dot(face.vertexA.normal) < 0.0f && n.dot(face.vertexB.normal) < 0.0f) ||
 			(n.dot(face.vertexB.normal) < 0.0f && n.dot(face.vertexC.normal) < 0.0f) ||
@@ -219,20 +219,20 @@ public class OBJLoader
 	
 	private void calculateTangents(Vertex a, Vertex b, Vertex c)
 	{
-		Vec3 deltaPos1 = b.position.subN(a.position);
-		Vec3 deltaPos2 = c.position.subN(a.position);
+		Vec3f deltaPos1 = b.position.subN(a.position);
+		Vec3f deltaPos2 = c.position.subN(a.position);
 		
-		Vec2 uv0 = a.uv;
-		Vec2 uv1 = b.uv;
-		Vec2 uv2 = c.uv;
+		Vec2f uv0 = a.uv;
+		Vec2f uv1 = b.uv;
+		Vec2f uv2 = c.uv;
 		
-		Vec2 deltaUv1 = uv1.sub(uv0, null);
-		Vec2 deltaUv2 = uv2.sub(uv0, null);
+		Vec2f deltaUv1 = uv1.sub(uv0, new Vec2f());
+		Vec2f deltaUv2 = uv2.sub(uv0, new Vec2f());
 
 		float r = 1.0f / (deltaUv1.getX() * deltaUv2.getY() - deltaUv1.getY() * deltaUv2.getX());
 		deltaPos1.mul(deltaUv2.getY());
 		deltaPos2.mul(deltaUv1.getY());
-		Vec3 tangent = deltaPos1.subN(deltaPos2);
+		Vec3f tangent = deltaPos1.subN(deltaPos2);
 		tangent.mul(r);
 		
 		a.tangent.add(tangent, a.tangent);
